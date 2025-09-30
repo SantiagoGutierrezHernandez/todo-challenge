@@ -9,7 +9,7 @@ class TaskStateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TaskState
-        fields = ["id", "name"]
+        fields = ["id", "name", "user"]
 
 
 class TaskSerializer(serializers.ModelSerializer):
@@ -18,7 +18,7 @@ class TaskSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Task
-        fields = ["id", "title", "description", "state"]
+        fields = ["id", "title", "description", "state", "user", "created_on"]
 
     def validate(self, attrs):
 

@@ -1,9 +1,11 @@
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import authentication_classes, permission_classes
 from rest_framework.permissions import IsAuthenticated
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, generics
 from .serializers import TaskSerializer, TaskStateSerializer
 from .models import Task, TaskState
+from .filters import TaskFilter
 
 
 @authentication_classes([TokenAuthentication])
@@ -55,6 +57,8 @@ class TaskList(
     generics.GenericAPIView
 ):
     serializer_class = TaskSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = TaskFilter
     
     def get_queryset(self):
         return Task.objects.filter(user=self.request.user)

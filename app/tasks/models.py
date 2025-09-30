@@ -12,3 +12,4 @@ class Task(models.Model):
     description = models.CharField(max_length=2000, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, editable=False, blank=False)
     state = models.ForeignKey(TaskState, on_delete=models.CASCADE)
+    created_on = models.DateField(auto_now_add=True)
