@@ -1,0 +1,56 @@
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: django
+      POSTGRES_PASSWORD: django
+      PGDATA: /data/postgres
+      POSTGRES_DB: django
+    volumes:
+      - db:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - db
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    ports:
+      - "8888:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@email.com
+      PGADMIN_DEFAULT_PASSWORD: django
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+  app:
+    build: .
+    environment:
+      - DEBUG=True
+      - PYDEVD_DISABLE_FILE_VALIDATION=1
+      - WORKERS=1
+      - TIMEOUT=999999
+      - DB_NAME=django
+      - DB_USER=django
+      - DB_PASS=django
+      - DB_HOST=host.docker.internal
+      - DB_PORT=5432
+      - LOG_LEVEL=INFO
+      - LOG_PATH=/mnt/app/log.log
+      - GUNICORN_ADDRESS=0.0.0.0
+    volumes:
+      - ./app:/mnt/app
+    ports:
+      - "8000:8000"
+      - "3002:3002"
+    networks:
+      - app-network
+    depends_on:
+      - db
+networks:
+  app-network:
+    external: false
+  db:
+    driver: bridge
+volumes:
+  db:
+  pgadmin-data:
